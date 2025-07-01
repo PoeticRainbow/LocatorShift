@@ -6,7 +6,7 @@
   "description": "Move that pesky Locator Bar up up up!",
   "authors": ["PoeticRainbow"],
   "contact": {},
-  "license": "All-Rights-Reserved",
+  "license": "GNU GPLv3",
   "icon": "assets/locatorshift/icon.png",
   "environment": "client",
   "entrypoints": {
