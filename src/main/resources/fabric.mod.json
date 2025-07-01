@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "locatorshift",
+  "version": "${version}",
+  "name": "LocatorShift",
+  "description": "Move that pesky Locator Bar up up up!",
+  "authors": ["PoeticRainbow"],
+  "contact": {},
+  "license": "All-Rights-Reserved",
+  "icon": "assets/locatorshift/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "io.github.poeticrainbow.locatorshift.LocatorShift"
+    ],
+    "main": [
+      "io.github.poeticrainbow.locatorshift.LocatorShift"
+    ]
+  },
+  "mixins": [
+    "locatorshift.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": ">=1.21.6"
+  }
+}
