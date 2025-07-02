@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,8 +40,11 @@ public class LocatorShift implements ModInitializer, ClientModInitializer {
         HudElementRegistry.attachElementAfter(VanillaHudElements.BOSS_BAR, of("locator_bar_addons"), locatorBar::renderAddons);
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (TOGGLE_LOCATOR_BAR.wasPressed()) {
+            if (client.player != null && TOGGLE_LOCATOR_BAR.wasPressed()) {
                 ShiftedLocatorBar.enabled = !ShiftedLocatorBar.enabled;
+
+                client.player.sendMessage(Text.translatable(ShiftedLocatorBar.enabled ?
+                    "message.locatorshift.toggle_on" : "message.locatorshift.toggle_off"), true);
             }
         });
     }
