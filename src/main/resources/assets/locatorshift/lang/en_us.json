@@ -2,5 +2,11 @@
   "category.locatorshift.locatorshift": "LocatorShift",
   "key.locatorshift.toggle_locator_bar": "Toggle Locator Bar",
   "message.locatorshift.toggle_off": "The Locator Bar is no longer visible",
-  "message.locatorshift.toggle_on": "The Locator Bar is now visible"
+  "message.locatorshift.toggle_on": "The Locator Bar is now visible",
+
+  "locatorshift.midnightconfig.title": "LocatorShift Config",
+  "locatorshift.midnightconfig.locatorBarVisible": "Locator Bar Visible",
+  "locatorshift.midnightconfig.shiftLocatorBar": "Shift Locator Bar",
+  "locatorshift.midnightconfig.renderPlayerHeads": "Render Player Heads",
+  "locatorshift.midnightconfig.yShift": "Shift Y"
 }

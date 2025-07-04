@@ -1,5 +1,6 @@
 package io.github.poeticrainbow.locatorshift;
 
+import eu.midnightdust.lib.config.MidnightConfig;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -27,6 +28,7 @@ public class LocatorShift implements ModInitializer, ClientModInitializer {
 
     @Override
     public void onInitialize() {
+        MidnightConfig.init(MOD_ID, LocatorShiftConfig.class);
     }
 
     @Override
@@ -41,9 +43,10 @@ public class LocatorShift implements ModInitializer, ClientModInitializer {
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (client.player != null && TOGGLE_LOCATOR_BAR.wasPressed()) {
-                ShiftedLocatorBar.enabled = !ShiftedLocatorBar.enabled;
+                LocatorShiftConfig.locatorBarVisible = !LocatorShiftConfig.locatorBarVisible;
+                LocatorShiftConfig.write(MOD_ID);
 
-                client.player.sendMessage(Text.translatable(ShiftedLocatorBar.enabled ?
+                client.player.sendMessage(Text.translatable(LocatorShiftConfig.locatorBarVisible ?
                     "message.locatorshift.toggle_on" : "message.locatorshift.toggle_off"), true);
             }
         });
