@@ -36,9 +36,9 @@ public class LocatorShift implements ModInitializer, ClientModInitializer {
         LOGGER.info("Shifting that Locator Bar!");
         var locatorBar = new ShiftedLocatorBar(MinecraftClient.getInstance());
 
-        // Background renders behind the Boss Bar and Text
+        //// Background renders behind the Boss Bar and Text
         HudElementRegistry.attachElementBefore(VanillaHudElements.BOSS_BAR, of("locator_bar"), locatorBar::renderBar);
-        // Addons render in front of the Boss Bar and Text
+        //// Addons render in front of the Boss Bar and Text
         HudElementRegistry.attachElementAfter(VanillaHudElements.BOSS_BAR, of("locator_bar_addons"), locatorBar::renderAddons);
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
