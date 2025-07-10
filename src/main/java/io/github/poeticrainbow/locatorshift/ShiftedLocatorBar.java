@@ -16,6 +16,8 @@ import org.spongepowered.asm.mixin.Unique;
 import java.util.Optional;
 import java.util.UUID;
 
+import static io.github.poeticrainbow.locatorshift.LocatorShiftConfig.*;
+
 public class ShiftedLocatorBar extends LocatorBar {
     public static final MinecraftClient client = MinecraftClient.getInstance();
 
@@ -35,7 +37,7 @@ public class ShiftedLocatorBar extends LocatorBar {
 
     @Override
     public int getCenterY(Window window) {
-        return LocatorShiftConfig.yShift;
+        return yShift;
     }
 
     @Unique
@@ -52,8 +54,10 @@ public class ShiftedLocatorBar extends LocatorBar {
             if (relativeYaw < -61.0d || relativeYaw > 61.0d) return;
             int leftEdge = MathHelper.ceil((float)(context.getScaledWindowWidth() - 9) / 2.0F);
             int xOffset = (int)(relativeYaw * 173.0d / 2.0d / 60.0d);
-            var distance = waypoint.squaredDistanceTo(client.cameraEntity);
-            renderPlayerHead(context, skin, leftEdge + xOffset, y, 255 - (int) Math.sqrt(distance) / 3);
+            var distance = (int) Math.sqrt(waypoint.squaredDistanceTo(client.cameraEntity));
+            var brightness = darkenWithDistance ? Math.clamp((float) (distance - far) / (near - far), 0, 1) : 1;
+            var scale = shrinkWhenFar ? (distance > far ? 5 : 8) : 8;
+            renderPlayerHead(context, skin, leftEdge + xOffset + 4, y + 2, (int) (brightness * 255), scale);
         }
     }
 
@@ -67,16 +71,17 @@ public class ShiftedLocatorBar extends LocatorBar {
     }
 
     @Unique
-    private static void renderPlayerHead(DrawContext context, SkinTextures texture, int x, int y, int distance) {
-        distance = Math.clamp(distance, 50, 255);
-        PlayerSkinDrawer.draw(context, texture.texture(), x, y - 2, 8, true, false,
-            ColorHelper.getArgb(255, distance, distance, distance));
+    private static void renderPlayerHead(DrawContext context, SkinTextures texture, int x, int y, int brightness, int scale) {
+        brightness = Math.clamp(brightness, minimumBrightness, 255);
+        var centerOffset = scale / 2;
+        PlayerSkinDrawer.draw(context, texture.texture(), x - centerOffset, y - centerOffset, scale, true, false,
+            ColorHelper.getArgb(255, brightness, brightness, brightness));
     }
 
     @Unique
     public static boolean shouldRender() {
         var handler = client.getNetworkHandler();
         if (handler == null) return false;
-        return LocatorShiftConfig.shiftLocatorBar && client.getNetworkHandler().getWaypointHandler().hasWaypoint();
+        return shiftLocatorBar && client.getNetworkHandler().getWaypointHandler().hasWaypoint();
     }
 }

@@ -7,6 +7,11 @@
   "locatorshift.midnightconfig.title": "LocatorShift Config",
   "locatorshift.midnightconfig.locatorBarVisible": "Locator Bar Visible",
   "locatorshift.midnightconfig.shiftLocatorBar": "Shift Locator Bar",
+  "locatorshift.midnightconfig.yShift": "Shift Y",
   "locatorshift.midnightconfig.renderPlayerHeads": "Render Player Heads",
-  "locatorshift.midnightconfig.yShift": "Shift Y"
+  "locatorshift.midnightconfig.near": "Near Threshold",
+  "locatorshift.midnightconfig.far": "Far Threshold",
+  "locatorshift.midnightconfig.shrinkWhenFar": "Shrink Heads When Far",
+  "locatorshift.midnightconfig.darkenWithDistance": "Darken Heads With Distance",
+  "locatorshift.midnightconfig.minimumBrightness": "Minimum Brightness"
 }
