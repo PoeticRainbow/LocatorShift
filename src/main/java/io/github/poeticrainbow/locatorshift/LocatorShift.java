@@ -18,12 +18,13 @@ import org.slf4j.LoggerFactory;
 public class LocatorShift implements ModInitializer, ClientModInitializer {
     public static final String MOD_ID = "locatorshift";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+    public static final KeyBinding.Category CATEGORY = new KeyBinding.Category(of(MOD_ID));
     public static final KeyBinding TOGGLE_LOCATOR_BAR = KeyBindingHelper.registerKeyBinding(
         new KeyBinding(
             "key.locatorshift.toggle_locator_bar",
             InputUtil.Type.KEYSYM,
             InputUtil.GLFW_KEY_F10,
-            "category.locatorshift.locatorshift"
+            CATEGORY
         ));
 
     @Override
@@ -42,7 +43,8 @@ public class LocatorShift implements ModInitializer, ClientModInitializer {
         HudElementRegistry.attachElementAfter(VanillaHudElements.BOSS_BAR, of("locator_bar_addons"), locatorBar::renderAddons);
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (client.player != null && TOGGLE_LOCATOR_BAR.wasPressed()) {
+            if (client.player == null) return;
+            if (TOGGLE_LOCATOR_BAR.wasPressed()) {
                 LocatorShiftConfig.locatorBarVisible = !LocatorShiftConfig.locatorBarVisible;
                 LocatorShiftConfig.write(MOD_ID);
 

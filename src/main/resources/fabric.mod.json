@@ -23,8 +23,10 @@
   "depends": {
     "fabricloader": ">=${loader_version}",
     "fabric": "*",
-    "minecraft": ">=1.21.6",
-    "midnightlib": "*",
+    "minecraft": ">=1.21.9",
+    "midnightlib": "*"
+  },
+  "recommends": {
     "modmenu": "*"
   }
 }

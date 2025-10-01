@@ -36,7 +36,7 @@ public abstract class LocatorBarMixin implements Bar {
         if (client.player == null) return;
         // Render player heads over normal locator bar
         int y = getCenterY(client.getWindow());
-        client.player.networkHandler.getWaypointHandler().forEachWaypoint(client.cameraEntity, waypoint -> {
+        client.player.networkHandler.getWaypointHandler().forEachWaypoint(client.getCameraEntity(), waypoint -> {
             ShiftedLocatorBar.renderWaypointAsPlayerHead(context, waypoint, y);
         });
     }
