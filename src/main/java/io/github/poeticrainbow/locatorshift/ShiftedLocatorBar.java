@@ -3,8 +3,8 @@ package io.github.poeticrainbow.locatorshift;
 import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.PlayerFaceRenderer;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.PlayerFaceExtractor;
 import net.minecraft.client.gui.contextualbar.LocatorBarRenderer;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.util.ARGB;
@@ -26,13 +26,13 @@ public class ShiftedLocatorBar extends LocatorBarRenderer {
     }
 
     @Override
-    public void renderBackground(@NonNull GuiGraphics context, @NonNull DeltaTracker tickCounter) {
-        if (shouldRender()) super.renderBackground(context, tickCounter);
+    public void extractBackground(@NonNull GuiGraphicsExtractor graphics, @NonNull DeltaTracker deltaTracker) {
+        if (isVisible()) super.extractBackground(graphics, deltaTracker);
     }
 
     @Override
-    public void render(@NonNull GuiGraphics context, @NonNull DeltaTracker tickCounter) {
-        if (shouldRender()) super.render(context, tickCounter);
+    public void extractRenderState(@NonNull GuiGraphicsExtractor graphics, @NonNull DeltaTracker deltaTracker) {
+        if (isVisible()) super.extractRenderState(graphics, deltaTracker);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class ShiftedLocatorBar extends LocatorBarRenderer {
         return yShift;
     }
 
-    public static void renderWaypointAsPlayerHead(GuiGraphics context, TrackedWaypoint waypoint, int y) {
+    public static void renderWaypointAsPlayerHead(GuiGraphicsExtractor context, TrackedWaypoint waypoint, int y) {
         if (client.level == null) return;
         var camera = client.getCameraEntity();
         if (camera == null) return;
@@ -53,12 +53,12 @@ public class ShiftedLocatorBar extends LocatorBarRenderer {
 
             double relativeYaw = waypoint.yawAngleToCamera(client.level, client.gameRenderer.getMainCamera(), entity -> 0f);
             if (relativeYaw < -61.0d || relativeYaw > 61.0d) return;
-            int leftEdge = Mth.ceil((float)(context.guiWidth() - 9) / 2.0F);
-            int xOffset = (int)(relativeYaw * 173.0d / 2.0d / 60.0d);
+            int leftEdge = Mth.ceil((float) (context.guiWidth() - 9) / 2.0F);
+            int xOffset = (int) (relativeYaw * 173.0d / 2.0d / 60.0d);
             var distance = (int) Math.sqrt(waypoint.distanceSquared(camera));
             var brightness = darkenWithDistance ? Math.clamp((float) (distance - far) / (near - far), 0, 1) : 1;
             var scale = shrinkWhenFar ? (distance > far ? 5 : 8) : 8;
-            renderPlayerHead(context, skin, leftEdge + xOffset + 4, y + 2, (int) (brightness * 255), scale);
+            extractPlayerHead(context, skin, leftEdge + xOffset + 4, y + 2, (int) (brightness * 255), scale);
         }
     }
 
@@ -70,14 +70,17 @@ public class ShiftedLocatorBar extends LocatorBarRenderer {
         return Optional.of(entry);
     }
 
-    private static void renderPlayerHead(GuiGraphics context, PlayerSkin texture, int x, int y, int brightness, int scale) {
+    private static void extractPlayerHead(GuiGraphicsExtractor context, PlayerSkin texture, int x, int y, int brightness, int scale) {
         brightness = Math.clamp(brightness, minimumBrightness, 255);
         var centerOffset = scale / 2;
-        PlayerFaceRenderer.draw(context, texture.body().texturePath(), x - centerOffset, y - centerOffset, scale, true, false,
-            ARGB.color(255, brightness, brightness, brightness));
+
+        PlayerFaceExtractor.extractRenderState(
+            context, texture.body().texturePath(), x - centerOffset, y - centerOffset, scale, true, false,
+            ARGB.color(255, brightness, brightness, brightness)
+        );
     }
 
-    public static boolean shouldRender() {
+    public static boolean isVisible() {
         var handler = client.getConnection();
         if (handler == null) return false;
         return shiftLocatorBar && client.getConnection().getWaypointManager().hasWaypoints();

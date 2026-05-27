@@ -4,7 +4,7 @@ import io.github.poeticrainbow.locatorshift.LocatorShiftConfig;
 import io.github.poeticrainbow.locatorshift.ShiftedLocatorBar;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.contextualbar.ContextualBarRenderer;
 import net.minecraft.client.gui.contextualbar.LocatorBarRenderer;
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,20 +18,20 @@ public abstract class LocatorBarRendererMixin implements ContextualBarRenderer {
     @Unique
     private static final Minecraft client = Minecraft.getInstance();
 
-    @Inject(method = "renderBackground(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/DeltaTracker;)V", at = @At("HEAD"), cancellable = true)
-    private void locatorshift$toggle_locator_bar_visibility(GuiGraphics context, DeltaTracker tickCounter, CallbackInfo ci) {
+    @Inject(method = "extractBackground", at = @At("HEAD"), cancellable = true)
+    private void locatorshift$toggle_locator_bar_visibility(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, CallbackInfo ci) {
         // Cancel rendering when not visible
         if (!shouldRender()) ci.cancel();
     }
 
-    @Inject(method = "render(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/DeltaTracker;)V", at = @At("HEAD"), cancellable = true)
-    private void locatorshift$toggle_locator_bar_addon_visibility(GuiGraphics context, DeltaTracker tickCounter, CallbackInfo ci) {
+    @Inject(method = "extractRenderState", at = @At("HEAD"), cancellable = true)
+    private void locatorshift$toggle_locator_bar_addon_visibility(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, CallbackInfo ci) {
         // Cancel rendering when not visible
         if (!shouldRender()) ci.cancel();
     }
 
-    @Inject(method = "render(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/DeltaTracker;)V", at = @At("TAIL"))
-    private void locatorshift$render_player_heads(GuiGraphics context, DeltaTracker tickCounter, CallbackInfo ci) {
+    @Inject(method = "extractRenderState", at = @At("TAIL"))
+    private void locatorshift$render_player_heads(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, CallbackInfo ci) {
         if (!LocatorShiftConfig.renderPlayerHeads) return;
         if (client.player == null) return;
         var camera = client.getCameraEntity();
@@ -39,7 +39,7 @@ public abstract class LocatorBarRendererMixin implements ContextualBarRenderer {
         // Render player heads over normal locator bar
         int y = top(client.getWindow());
         client.player.connection.getWaypointManager().forEachWaypoint(camera, waypoint -> {
-            ShiftedLocatorBar.renderWaypointAsPlayerHead(context, waypoint, y);
+            ShiftedLocatorBar.renderWaypointAsPlayerHead(graphics, waypoint, y);
         });
     }
 
