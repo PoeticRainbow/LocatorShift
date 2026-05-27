@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 @Mixin(Gui.class)
-public class InGameHudMixin {
+public class GuiMixin {
     @ModifyVariable(method = "nextContextualInfoState()Lnet/minecraft/client/gui/Gui$ContextualInfo;", at = @At("STORE"), ordinal = 0)
     private boolean locatorshift$disable_default_locator_bar(boolean value) {
         // true means show locator, false means hide locator bar

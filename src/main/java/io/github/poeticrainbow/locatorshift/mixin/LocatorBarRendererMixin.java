@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(LocatorBarRenderer.class)
-public abstract class LocatorBarMixin implements ContextualBarRenderer {
+public abstract class LocatorBarRendererMixin implements ContextualBarRenderer {
     @Unique
     private static final Minecraft client = Minecraft.getInstance();
 
@@ -34,9 +34,11 @@ public abstract class LocatorBarMixin implements ContextualBarRenderer {
     private void locatorshift$render_player_heads(GuiGraphics context, DeltaTracker tickCounter, CallbackInfo ci) {
         if (!LocatorShiftConfig.renderPlayerHeads) return;
         if (client.player == null) return;
+        var camera = client.getCameraEntity();
+        if (camera == null) return;
         // Render player heads over normal locator bar
         int y = top(client.getWindow());
-        client.player.connection.getWaypointManager().forEachWaypoint(client.getCameraEntity(), waypoint -> {
+        client.player.connection.getWaypointManager().forEachWaypoint(camera, waypoint -> {
             ShiftedLocatorBar.renderWaypointAsPlayerHead(context, waypoint, y);
         });
     }

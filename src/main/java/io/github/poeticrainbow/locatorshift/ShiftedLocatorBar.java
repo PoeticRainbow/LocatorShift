@@ -11,6 +11,7 @@ import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.PlayerSkin;
 import net.minecraft.world.waypoints.TrackedWaypoint;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -25,22 +26,24 @@ public class ShiftedLocatorBar extends LocatorBarRenderer {
     }
 
     @Override
-    public void renderBackground(GuiGraphics context, DeltaTracker tickCounter) {
+    public void renderBackground(@NonNull GuiGraphics context, @NonNull DeltaTracker tickCounter) {
         if (shouldRender()) super.renderBackground(context, tickCounter);
     }
 
     @Override
-    public void render(GuiGraphics context, DeltaTracker tickCounter) {
+    public void render(@NonNull GuiGraphics context, @NonNull DeltaTracker tickCounter) {
         if (shouldRender()) super.render(context, tickCounter);
     }
 
     @Override
-    public int top(Window window) {
+    public int top(@NonNull Window window) {
         return yShift;
     }
 
     public static void renderWaypointAsPlayerHead(GuiGraphics context, TrackedWaypoint waypoint, int y) {
         if (client.level == null) return;
+        var camera = client.getCameraEntity();
+        if (camera == null) return;
         var source = waypoint.id().left();
         if (source.isPresent()) {
             var uuid = source.get();
@@ -52,7 +55,7 @@ public class ShiftedLocatorBar extends LocatorBarRenderer {
             if (relativeYaw < -61.0d || relativeYaw > 61.0d) return;
             int leftEdge = Mth.ceil((float)(context.guiWidth() - 9) / 2.0F);
             int xOffset = (int)(relativeYaw * 173.0d / 2.0d / 60.0d);
-            var distance = (int) Math.sqrt(waypoint.distanceSquared(client.getCameraEntity()));
+            var distance = (int) Math.sqrt(waypoint.distanceSquared(camera));
             var brightness = darkenWithDistance ? Math.clamp((float) (distance - far) / (near - far), 0, 1) : 1;
             var scale = shrinkWhenFar ? (distance > far ? 5 : 8) : 8;
             renderPlayerHead(context, skin, leftEdge + xOffset + 4, y + 2, (int) (brightness * 255), scale);
